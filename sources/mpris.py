@@ -13,6 +13,7 @@ class MPRISPlayer(Player):
         self._bus = dbus.SessionBus()
         self._dbus_interface.onPropertiesChanged = self._updated
         self._callbacks = []
+        self._metadata = self._current_track_metadata
 
 
     @property

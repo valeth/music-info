@@ -45,3 +45,6 @@ class Player(ABC):
     def on_update(self, callback, *args):
         pass
 
+    @property
+    def is_playing(self):
+        return self.status == PlaybackStatus.PLAYING
