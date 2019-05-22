@@ -33,22 +33,25 @@ def write_info_text(player, path):
     with outfile.open(mode="w") as f:
         f.write(text)
 
-def main(args):
-    player_name = "cantata"
-    path = args.path
-    path.mkdir(parents=True, exist_ok=True)
+def music_info(info_path, player_name):
+    info_path.mkdir(parents=True, exist_ok=True)
     player = MPRISPlayer.get_player(player_name)
 
     if player:
-        player.on_update(change_cover_image, path)
-        player.on_update(write_info_text, path)
+        player.on_update(change_cover_image, info_path)
+        player.on_update(write_info_text, info_path)
         player.update()
         GLib.MainLoop().run()
     else:
         print(f"Could not find {player_name}")
 
-if __name__ == "__main__":
+def _main():
     parser = argparse.ArgumentParser("Output cover and song information")
     parser.add_argument("--path", type=Path, help="The path where the files should be stored")
+    parser.add_argument("--player", type=str, default="cantata", help="The player to use for playback information")
     args = parser.parse_args()
-    main(args)
+    music_info(args.path, args.player)
+
+
+if __name__ == "__main__":
+    _main()
