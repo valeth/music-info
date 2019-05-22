@@ -1,5 +1,6 @@
 from pathlib import Path
 import pydbus as dbus
+from urllib.parse import urlparse
 
 from .player import Player, PlaybackStatus
 
@@ -26,7 +27,11 @@ class MPRISPlayer(Player):
 
     @property
     def album(self):
-        return self._metadata["album"]
+        tmp = self._metadata["album"]
+        if tmp and tmp == "Unknown":
+            return None
+        else:
+            return tmp
 
     @property
     def track_number(self):
@@ -34,12 +39,9 @@ class MPRISPlayer(Player):
 
     @property
     def cover_art(self):
-        cover = self._metadata["cover_art"]
-        if cover:
-            try:
-                return Path(cover.rpartition(":")[-1])
-            except TypeError:
-                pass
+        cover_url = urlparse(self._metadata["cover_art"])
+        if cover_url and cover_url.scheme == "file":
+            return Path(cover_url.path)
         return Path("./res/default_cover.jpg").absolute()
 
     @property

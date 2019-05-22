@@ -12,10 +12,13 @@ def change_cover_image(player, path):
     if not player.is_playing:
         return
 
-    outfile = path / "cover.png"
+    cover_file = path / "cover.png"
+
+    outfile = path / ".cover.png"
     cover = Image.open(player.cover_art)
     out = cover.resize((500, 500))
     out.save(outfile)
+    outfile.rename(cover_file)
 
 def write_info_text(player, path):
     if not player.is_playing:
@@ -26,7 +29,10 @@ def write_info_text(player, path):
     if player.album:
         text += f"{player.album} / "
     if player.artist:
-        artist = ", ".join(player.artist)
+        if type(player.artist) == list:
+            artist = ", ".join(player.artist)
+        else:
+            artist = player.artist
         text += f"{artist} - "
     text += player.title
 
